@@ -1,31 +1,10 @@
 <ul>
 @for (world of worlds(); track world.id) {
   <li>
-    <article class="article" [class.active]="this.activeWorld()?.id === world.id">
-      <div>{{ world.name }} </div>
-      <span class="badge" [class.running]="this.activeWorld()?.id === world.id"> {{ world.status }}</span>
-      <div>{{ `${world.mode} · ${world.difficulty}` }}</div>
-      @if (this.activeWorld()?.id === world.id) {
-        Running
-      }
-      @else {
-        <button type="button" [attr.aria-label]="`Start world ${world.id}`" (click)="startWorld(world.id)">Start world</button>
-      }
-      
-    </article>
+    <app-world-card (startWorld)="startWorld($event)" [world]="world" />
   </li>
 }
 @empty {
   <li>No world found</li>
 }
 </ul>
-
-<section>
-  @if (this.activeWorld()) {
-    Now running: {{ worldSummary() }}
-  }
-  @else {
-    No world running
-  }
-  
-</section>

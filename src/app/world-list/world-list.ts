@@ -1,8 +1,9 @@
 import { Component, computed, signal } from '@angular/core';
 import { mockWorlds } from '../repository/mock-world';
+import { WorldCard } from './world-card/world-card';
 
 @Component({
-  imports: [],
+  imports: [WorldCard],
   selector: 'app-world-list',
   styleUrl: './world-list.scss',
   templateUrl: './world-list.html',
@@ -14,19 +15,10 @@ export class WorldList {
     this.worlds().find((w) => w.status === 'started'),
   );
 
-  protected readonly worldSummary = computed(() =>
-    this.activeWorld()
-      ? `${this.activeWorld()?.name} · ${this.activeWorld()?.mode} · ${this.activeWorld()?.difficulty}`
-      : 'No world running',
-  );
-
   protected startWorld(id: string): void {
     console.log('Start world clicked with id', id);
-    this.worlds.update((worlds) => {
-      return worlds.map((w) => {
-        w.status = w.id === id ? 'started' : 'stopped';
-        return w;
-      });
-    });
+    this.worlds.update((worlds) =>
+      worlds.map((w) => ({ ...w, status: w.id === id ? 'started' : 'stopped' })),
+    );
   }
 }

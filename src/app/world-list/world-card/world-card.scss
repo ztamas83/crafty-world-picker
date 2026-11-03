@@ -1,0 +1,43 @@
+
+:host { display: block; height: 100%; }
+
+.article {
+  height: 100%;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+
+  h3 {
+    margin: 0;
+    font-size: 1.125rem;
+  }
+
+  button {
+    margin-top: auto;
+  }
+
+  &.active {
+    border: 2px solid #15803d;
+  }
+}
+
+.badge {
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: #374151;
+  background: #e5e7eb;
+
+  &.running {
+    color: #14532d;
+    background: #dcfce7;
+  }
+}
