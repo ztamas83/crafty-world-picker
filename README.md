@@ -1,6 +1,6 @@
 # crafty-world-picker
-An UI wrapper around Crafty (https://gitlab.com/crafty-controller/crafty-4)
 
+An UI wrapper around Crafty (https://gitlab.com/crafty-controller/crafty-4)
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.5.
 
