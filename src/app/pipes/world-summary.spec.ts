@@ -1,4 +1,4 @@
-import { WorldSummaryPipe } from './world-summary-pipe';
+import { WorldSummaryPipe } from './world-summary';
 
 describe('WorldSummaryPipe', () => {
   it('create an instance', () => {

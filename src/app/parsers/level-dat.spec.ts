@@ -58,6 +58,8 @@ describe('readLevelSettings', () => {
   });
 
   it('rejects data that is not NBT', async () => {
-    await expect(readLevelSettings(new Uint8Array([1, 2, 3]))).rejects.toThrow();
+    await expect(readLevelSettings(new Uint8Array([1, 2, 3]))).rejects.toThrow(
+      /Expected an opening List or Compound tag/,
+    );
   });
 });

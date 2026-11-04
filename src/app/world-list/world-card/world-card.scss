@@ -1,43 +1,52 @@
+:host {
+  display: block;
+}
 
-:host { display: block; height: 100%; }
-
+/*
+ * Layout: text on the left (name, settings, state), button on the right.
+ * Grid placement keeps the existing markup order (h3, badge, summary, button).
+ */
 .article {
-  height: 100%;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 0.75rem;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 12px;
+  padding: 14px 16px;
+  background: var(--card);
+  color: var(--fg);
+  border-radius: 12px;
 
   h3 {
+    grid-column: 1;
+    grid-row: 1;
     margin: 0;
-    font-size: 1.125rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  > div:not(.badge) {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 0.95rem;
+    text-transform: capitalize;
   }
 
   button {
-    margin-top: auto;
-  }
-
-  &.active {
-    border: 2px solid #15803d;
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    background: var(--play-bg);
   }
 }
 
 .badge {
-  padding: 0.125rem 0.5rem;
-  border-radius: 999px;
-  font-size: 0.875rem;
-  font-weight: 600;
+  grid-column: 1;
+  grid-row: 3;
+  font-size: 0.9rem;
+  color: var(--muted);
   text-transform: capitalize;
-  color: #374151;
-  background: #e5e7eb;
 
   &.running {
-    color: #14532d;
-    background: #dcfce7;
+    font-weight: 600;
+    color: var(--play-text);
   }
 }

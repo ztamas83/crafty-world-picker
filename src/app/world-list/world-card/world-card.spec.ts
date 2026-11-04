@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { mockWorlds } from '../../services/mock-world';
+import { mockWorlds } from '../../services/mock-worlds.data';
 import { MockWorldStore } from '../../services/mock-world-store';
 import { WorldStore } from '../../services/world-store';
 import { WorldCard } from './world-card';

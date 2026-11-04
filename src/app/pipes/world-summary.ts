@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { World } from './models/world';
+import { World } from '../models/world.model';
 
 @Pipe({
   name: 'worldSummary',

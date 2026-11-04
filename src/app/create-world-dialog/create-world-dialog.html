@@ -1,0 +1,60 @@
+<dialog #dialog aria-labelledby="create-world-title">
+  <h2 id="create-world-title">Create world</h2>
+  <form [formRoot]="worldForm">
+    <div class="form-error" role="alert">
+      @for (e of worldForm().errors(); track e.kind) {
+        <p>{{ e.message }}</p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="world-name">World name</label>
+      <input
+        id="world-name"
+        autocomplete="off"
+        autofocus
+        [formField]="worldForm.name"
+        [attr.aria-invalid]="showNameErrors()"
+        aria-describedby="world-name-errors"
+      />
+      <div id="world-name-errors" class="field-errors">
+        @if (showNameErrors()) {
+          @for (e of worldForm.name().errors(); track e.kind) {
+            <p>{{ e.message }}</p>
+          }
+        }
+      </div>
+    </div>
+
+    <label>
+      Mode
+      <select [formField]="worldForm.mode">
+        @for (m of GAME_MODES; track m) {
+          <option [value]="m">{{ m }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      Difficulty
+      <select [formField]="worldForm.difficulty">
+        @for (d of GAME_DIFFICULTIES; track d) {
+          <option [value]="d">{{ d }}</option>
+        }
+      </select>
+    </label>
+
+    <div class="actions">
+      <button type="button" [disabled]="worldForm().submitting()" (click)="close('cancel')">
+        Cancel
+      </button>
+      <button type="submit" [disabled]="worldForm().submitting() || !worldForm().valid()">
+        @if (worldForm().submitting()) {
+          <span class="spinner" aria-hidden="true"></span>Creating...
+        } @else {
+          Create
+        }
+      </button>
+    </div>
+  </form>
+</dialog>

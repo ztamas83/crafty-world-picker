@@ -1,0 +1,75 @@
+dialog {
+  width: min(560px, calc(100% - 32px));
+  max-height: calc(100% - 32px);
+  padding: 16px;
+  color: var(--fg);
+  background: var(--card);
+  border: 0;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.3);
+
+  &::backdrop {
+    background: rgb(0 0 0 / 0.55);
+  }
+
+  h2 {
+    margin: 0 0 12px;
+    font-size: 1.2rem;
+  }
+}
+
+/* Ready for Module 16: the form inside the dialog */
+form {
+  display: grid;
+  gap: 10px;
+}
+
+.field {
+  display: grid;
+  gap: 4px;
+  font-size: 0.95rem;
+}
+
+input[aria-invalid='true'] {
+  border-color: var(--stop-text);
+  border-width: 2px;
+}
+
+.field-errors,
+.form-error {
+  p {
+    margin: 0;
+  }
+}
+
+.field-errors {
+  font-size: 0.9rem;
+  color: var(--stop-text);
+}
+
+/* Live region stays in the DOM so screen readers announce new messages */
+.form-error:not(:empty) {
+  padding: 12px;
+  border-radius: 8px;
+  color: #fff;
+  background: var(--stop-bg);
+}
+
+option {
+  text-transform: capitalize;
+}
+
+/* Row of buttons at the bottom (wrap Cancel + Create in <div class="actions">) */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* Submit = primary (global accent style); any other button = secondary */
+button:not([type='submit']) {
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--border);
+}

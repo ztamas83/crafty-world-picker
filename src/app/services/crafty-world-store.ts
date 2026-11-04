@@ -1,14 +1,12 @@
 import { computed, inject, resource, Service, signal } from '@angular/core';
-import { Files } from '../models/crafty';
-import { GameMode, World } from '../models/world';
-import { Crafty } from './crafty';
-import { LevelSettings, readLevelSettings } from './level-dat';
-import { getProperty, setProperty } from './server-properties';
+import { CraftyResponse, FileData, Files } from '../models/crafty-api.model';
+import { GAME_MODES, GameMode, NewWorld, World } from '../models/world.model';
+import { LevelSettings, readLevelSettings } from '../parsers/level-dat';
+import { getProperty, setProperty } from '../parsers/server-properties';
+import { Crafty } from './crafty/crafty';
 import { WorldStore } from './world-store';
 
 const WORLDS_FOLDER = 'worlds';
-
-const GAME_MODES: readonly GameMode[] = ['survival', 'creative', 'adventure', 'spectator'];
 
 /** Parses a `gamemode` value from server.properties; unknown values give undefined. */
 function toGameMode(value: string | undefined): GameMode | undefined {
@@ -98,10 +96,14 @@ export class CraftyWorldStore implements WorldStore {
     }));
   });
 
+  readonly serverId = this.crafty.serverId;
+  readonly isServerRunning = computed(() => Boolean(this.crafty.isRunning()));
+  readonly onlinePlayers = computed(() => this.crafty.onlinePlayers() ?? 0);
+  readonly maxPlayers = computed(() => this.crafty.maxPlayers() ?? 0);
   readonly activeWorld = computed(() => this.list().find((w) => w.status === 'started'));
-  readonly isLoading = this.serverData.isLoading;
+  readonly isLoading = computed(() => this.serverData.isLoading() || this.crafty.isLoading());
   readonly errorMessage = computed(() => {
-    if (this.serverData.error()) {
+    if (this.serverData.error() || this.crafty.lastError()) {
       return 'Failed to load data, see logs!';
     }
     return undefined;
@@ -117,38 +119,56 @@ export class CraftyWorldStore implements WorldStore {
     this.serverData.reload();
   }
 
+  async setProperties(properties: Record<string, string>): Promise<CraftyResponse<FileData>> {
+    const props = await this.crafty.readFile('server.properties');
+
+    let newProps = props.data.content;
+    if (newProps === undefined) {
+      throw new Error('New properties are empty');
+    }
+    for (const [key, value] of Object.entries(properties)) {
+      newProps = setProperty(newProps, key, value);
+    }
+
+    return await this.crafty.writeFile(
+      'server.properties',
+      newProps,
+      props.data.attributes.modified_epoch,
+    );
+  }
+
   async startWorld(id: string): Promise<void> {
     try {
       this.isBusy.set(true);
       console.log('Start world clicked with id', id);
 
-      const props = await this.crafty.readFile('server.properties');
+      await this.setProperties({ 'level-name': id });
 
-      const newProps = setProperty(props.data.content, 'level-name', id);
-      if (newProps === undefined) {
-        console.error('Could not set new properties, no action');
-        return;
-      }
-
-      const propsResult = await this.crafty.writeFile(
-        'server.properties',
-        newProps,
-        props.data.attributes.modified_epoch,
-      );
       try {
         await this.crafty.serverAction(this.crafty.isRunning() ? 'restart_server' : 'start_server');
       } catch {
-        console.warn('Restart server failed, restoring level value');
-        await this.crafty.writeFile(
-          'server.properties',
-          props.data.content!,
-          propsResult.data.attributes.modified_epoch,
-        );
+        console.warn('Restart server failed');
       }
 
       this.reload();
     } catch (error) {
       console.error(error);
+    } finally {
+      this.isBusy.set(false);
+    }
+  }
+
+  async createWorld(world: NewWorld): Promise<void> {
+    this.isBusy.set(true);
+
+    try {
+      await this.setProperties({
+        'level-name': world.name,
+        gamemode: world.mode,
+        difficulty: world.difficulty,
+      });
+      await this.crafty.serverAction(this.crafty.isRunning() ? 'restart_server' : 'start_server');
+      this.reload();
     } finally {
       this.isBusy.set(false);
     }

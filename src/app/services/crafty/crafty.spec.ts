@@ -2,8 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Crafty } from './crafty';
-import { CraftyWorldStore } from './crafty-world-store';
-import { WorldStore } from './world-store';
+import { provideCraftyConfig } from './crafty-config';
 
 describe('Crafty', () => {
   let service: Crafty;
@@ -11,9 +10,9 @@ describe('Crafty', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        { provide: WorldStore, useClass: CraftyWorldStore },
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideCraftyConfig({ apiToken: 'test-token', serverId: 'test-server' }),
       ],
     });
     service = TestBed.inject(Crafty);

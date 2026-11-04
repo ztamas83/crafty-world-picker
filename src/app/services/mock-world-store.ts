@@ -1,17 +1,21 @@
 import { computed, Service, signal } from '@angular/core';
-import { World } from '../models/world';
-import { mockWorlds } from './mock-world';
+import { NewWorld, World } from '../models/world.model';
+import { mockWorlds } from './mock-worlds.data';
 import { WorldStore } from './world-store';
 
 @Service({ autoProvided: false })
 export class MockWorldStore implements WorldStore {
   private readonly worlds = signal<World[]>(mockWorlds);
 
+  readonly serverId = signal('mock-server-id');
   readonly isError = signal(false);
   readonly isLoading = signal(false);
   readonly isBusy = signal(false);
 
   readonly activeWorld = computed(() => this.worlds().find((w) => w.status === 'started'));
+  readonly isServerRunning = computed(() => this.activeWorld() !== undefined);
+  readonly onlinePlayers = signal(0);
+  readonly maxPlayers = signal(20);
 
   readonly list = this.worlds.asReadonly();
 
@@ -24,5 +28,12 @@ export class MockWorldStore implements WorldStore {
 
   reload(): void {
     console.log('Reload triggered');
+  }
+
+  async createWorld(world: NewWorld): Promise<void> {
+    this.worlds.update((ws) => [
+      ...ws.map((w) => ({ ...w, status: 'stopped' as const })),
+      { ...world, id: world.name, status: 'started' },
+    ]);
   }
 }

@@ -1,9 +1,19 @@
-/* World card grid */
 ul {
   margin: 0;
   padding: 0;
   list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+li {
+  color: var(--muted);
+}
+
+[role='alert'] {
+  padding: 12px;
+  border-radius: 8px;
+  color: #fff;
+  background: var(--stop-bg);
 }

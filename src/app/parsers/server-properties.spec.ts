@@ -1,7 +1,8 @@
 import { getProperty, setProperty } from './server-properties';
 
 describe('server-properties', () => {
-  const sample = '#Minecraft server properties\nmotd=Hello\nlevel-name=worlds/foo\ndifficulty=easy\n';
+  const sample =
+    '#Minecraft server properties\nmotd=Hello\nlevel-name=worlds/foo\ndifficulty=easy\n';
 
   describe('getProperty', () => {
     it('reads a value', () => {

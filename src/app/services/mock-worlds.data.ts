@@ -1,4 +1,4 @@
-import { World } from "../models/world";
+import { World } from "../models/world.model";
 
 export const mockWorlds: World[] = [
   { id: '1', difficulty: 'easy', mode: 'creative', name: 'test1', status: "started" },

@@ -1,5 +1,5 @@
 import { read } from 'nbtify';
-import { Difficulty, GameMode } from '../models/world';
+import { Difficulty, GameMode } from '../models/world.model';
 
 export interface LevelSettings {
   mode?: GameMode;

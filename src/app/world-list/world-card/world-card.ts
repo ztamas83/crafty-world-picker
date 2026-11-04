@@ -1,6 +1,6 @@
 import { Component, computed, input, output } from '@angular/core';
-import { World } from '../../models/world';
-import { WorldSummaryPipe } from '../../world-summary-pipe';
+import { World } from '../../models/world.model';
+import { WorldSummaryPipe } from '../../pipes/world-summary';
 
 @Component({
   imports: [WorldSummaryPipe],

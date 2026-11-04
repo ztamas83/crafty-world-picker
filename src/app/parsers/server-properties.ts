@@ -54,6 +54,12 @@ export function getProperty(content: string | undefined, key: string): string | 
  * Replaces the first existing line for `key`, or appends a new line.
  * Other lines and the original line ending style are kept.
  */
+export function setProperty(content: string, key: string, value: string): string;
+export function setProperty(
+  content: string | undefined,
+  key: string,
+  value: string,
+): string | undefined;
 export function setProperty(
   content: string | undefined,
   key: string,
