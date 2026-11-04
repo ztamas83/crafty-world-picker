@@ -1,9 +1,14 @@
 <main>
   <h1>{{ title() }}</h1>
-  <section aria-live="polite">
+  <section aria-live="polite" [attr.aria-busy]="worldsStore.isLoading()">
     <h2>Server</h2>
-    @if (worldsStore.isLoading()) {
-      ... Refreshing data
+    @if (worldsStore.isInitialLoading()) {
+      <span class="visually-hidden">Loading server status</span>
+      <div class="server-skeleton" aria-hidden="true">
+        <span class="skeleton"></span>
+        <span class="skeleton"></span>
+        <span class="skeleton"></span>
+      </div>
     } @else if (errorMessage(); as e) {
       <div role="alert">{{ e }}</div>
     } @else {
@@ -34,7 +39,19 @@
 
   <section class="actions">
     <button type="button" (click)="createDialog.open()">New world</button>
-    <button type="button" (click)="refreshServer('click')">Refresh Server</button>
+    <!-- aria-disabled instead of disabled: a disabled button would drop keyboard focus -->
+    <button
+      type="button"
+      [attr.aria-disabled]="refreshing()"
+      [class.is-busy]="refreshing()"
+      (click)="refreshServer()"
+    >
+      @if (refreshing()) {
+        <span class="spinner" aria-hidden="true"></span>Refreshing...
+      } @else {
+        Refresh Server
+      }
+    </button>
   </section>
   <app-create-world-dialog #createDialog />
 </main>

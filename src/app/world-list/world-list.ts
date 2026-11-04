@@ -10,4 +10,6 @@ import { WorldCard } from './world-card/world-card';
 })
 export class WorldList {
   protected readonly worldsStore = inject(WorldStore);
+  /** Number of placeholder cards shown while loading. */
+  protected readonly skeletonRows = [1, 2, 3];
 }

@@ -21,6 +21,9 @@
   --accent-text: #2b5fa8;
 
   --focus: #2b5fa8;
+
+  --skeleton: #e7e2d7;
+  --skeleton-shine: #f4f1ea;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -36,6 +39,9 @@
     --accent-text: #6c9fe0;
 
     --focus: #6c9fe0;
+
+    --skeleton: #3a3a3a;
+    --skeleton-shine: #474747;
   }
 }
 
@@ -138,4 +144,47 @@ select {
   .spinner {
     animation-duration: 2.4s;
   }
+}
+
+/* Loading placeholder. Decorative: mark with aria-hidden and give the container aria-busy. */
+.skeleton {
+  display: block;
+  height: 1em;
+  border-radius: 6px;
+  background: linear-gradient(
+      90deg,
+      var(--skeleton) 25%,
+      var(--skeleton-shine) 50%,
+      var(--skeleton) 75%
+    )
+    0 0 / 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
+/* Hidden visually, still read by screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }

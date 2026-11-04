@@ -20,7 +20,27 @@ section > div {
   color: var(--muted);
 }
 
+.server-skeleton {
+  display: grid;
+  gap: 8px;
+  padding: 3px 0;
+
+  .skeleton:nth-child(1) {
+    width: 70%;
+  }
+  .skeleton:nth-child(2) {
+    width: 35%;
+  }
+  .skeleton:nth-child(3) {
+    width: 45%;
+  }
+}
+
 .actions {
+  button.is-busy {
+    cursor: progress;
+  }
+
   display: flex;
   gap: 12px; // space between the buttons
   flex-wrap: wrap; // wrap on narrow screens

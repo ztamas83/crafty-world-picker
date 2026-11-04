@@ -1,11 +1,23 @@
 <h2>Worlds</h2>
 
-@if (worldsStore.isLoading()) {
-  Loading world list ...
+@if (worldsStore.isInitialLoading()) {
+  <div aria-busy="true">
+    <span class="visually-hidden">Loading worlds</span>
+    <ul aria-hidden="true">
+      @for (i of skeletonRows; track i) {
+        <li class="card-skeleton">
+          <span class="skeleton name"></span>
+          <span class="skeleton settings"></span>
+          <span class="skeleton state"></span>
+          <span class="skeleton button"></span>
+        </li>
+      }
+    </ul>
+  </div>
 } @else if (worldsStore.isError()) {
   <div role="alert">Error loading world list!</div>
 } @else {
-  <ul>
+  <ul [attr.aria-busy]="worldsStore.isLoading()">
     @for (world of worldsStore.list(); track world.id) {
       <li>
         <app-world-card

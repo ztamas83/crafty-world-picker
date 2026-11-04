@@ -102,6 +102,10 @@ export class CraftyWorldStore implements WorldStore {
   readonly maxPlayers = computed(() => this.crafty.maxPlayers() ?? 0);
   readonly activeWorld = computed(() => this.list().find((w) => w.status === 'started'));
   readonly isLoading = computed(() => this.serverData.isLoading() || this.crafty.isLoading());
+  /** A resource reports 'loading' on its first load and 'reloading' on later ones. */
+  readonly isInitialLoading = computed(
+    () => this.serverData.status() === 'loading' || this.crafty.stats.status() === 'loading',
+  );
   readonly errorMessage = computed(() => {
     if (this.serverData.error() || this.crafty.lastError()) {
       return 'Failed to load data, see logs!';

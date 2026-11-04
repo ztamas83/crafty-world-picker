@@ -10,6 +10,7 @@ export class MockWorldStore implements WorldStore {
   readonly serverId = signal('mock-server-id');
   readonly isError = signal(false);
   readonly isLoading = signal(false);
+  readonly isInitialLoading = signal(false);
   readonly isBusy = signal(false);
 
   readonly activeWorld = computed(() => this.worlds().find((w) => w.status === 'started'));
