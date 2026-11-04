@@ -1,10 +1,9 @@
 <ul>
-@for (world of worlds(); track world.id) {
-  <li>
-    <app-world-card (startWorld)="startWorld($event)" [world]="world" />
-  </li>
-}
-@empty {
-  <li>No world found</li>
-}
+  @for (world of worldsStore.list(); track world.id) {
+    <li>
+      <app-world-card (startWorld)="worldsStore.startWorld($event)" [world]="world" />
+    </li>
+  } @empty {
+    <li>No world found</li>
+  }
 </ul>

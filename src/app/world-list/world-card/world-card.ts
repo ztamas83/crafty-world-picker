@@ -1,8 +1,9 @@
 import { Component, computed, input, output } from '@angular/core';
 import { World } from '../../models/world';
+import { WorldSummaryPipe } from '../../world-summary-pipe';
 
 @Component({
-  imports: [],
+  imports: [WorldSummaryPipe],
   selector: 'app-world-card',
   styleUrl: './world-card.scss',
   templateUrl: './world-card.html',
@@ -10,8 +11,5 @@ import { World } from '../../models/world';
 export class WorldCard {
   readonly world = input.required<World>();
   readonly startWorld = output<string>();
-  protected readonly isActive = computed(() => this.world().status === "started");
-  protected readonly worldSummary = computed(() =>
-      `${this.world().name} · ${this.world().mode} · ${this.world().difficulty}`
-  );
+  protected readonly isActive = computed(() => this.world().status === 'started');
 }

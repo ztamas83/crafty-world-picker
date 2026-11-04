@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MockWorldStore } from '../services/mock-world-store';
+import { WorldStore } from '../services/world-store';
 import { WorldList } from './world-list';
 
 describe('WorldList', () => {
@@ -7,6 +9,7 @@ describe('WorldList', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [{ provide: WorldStore, useClass: MockWorldStore }],
       imports: [WorldList],
     }).compileComponents();
 

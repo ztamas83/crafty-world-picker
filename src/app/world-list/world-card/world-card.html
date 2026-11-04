@@ -1,12 +1,16 @@
 <article class="article" [class.active]="this.isActive()">
-  <h3>{{ this.world().name }} </h3>
-  <div class="badge" [class.running]="this.isActive()"> {{ this.world().status }}</div>
-  <div>{{ this.worldSummary() }}</div>
+  <h3>{{ this.world().name }}</h3>
+  <div class="badge" [class.running]="this.isActive()">{{ this.world().status }}</div>
+  <div>{{ this.world() | worldSummary }}</div>
   @if (this.isActive()) {
     Running
+  } @else {
+    <button
+      type="button"
+      [attr.aria-label]="`Start world ${world().name}`"
+      (click)="startWorld.emit(this.world().id)"
+    >
+      Start world
+    </button>
   }
-  @else {
-    <button type="button" [attr.aria-label]="this.world().name" (click)="startWorld.emit(this.world().id)">Start world</button>
-  }
-  
 </article>

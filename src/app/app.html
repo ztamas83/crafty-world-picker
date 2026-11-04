@@ -1,18 +1,40 @@
 <main>
   <h1>{{ title() }}</h1>
-  <ul>
-    <li>Server: {{ serverName() }} {{ serverId() }}</li>
-    <li>Status: {{ serverStatus().toUpperCase() }}</li>
-  </ul>
+  <section aria-live="polite">
+    <h2>Server</h2>
+    @if (server.isLoading()) {
+      ... Refreshing data
+    } @else if (errorMessage(); as e) {
+      <div role="alert">{{ e }}</div>
+    } @else {
+      <div>UUID: {{ server.serverId() }}</div>
+      <div>
+        Status:
+        @if (server.isRunning()) {
+          Running
+        } @else {
+          Stopped
+        }
+      </div>
+      <div>Players: {{ server.onlinePlayers() }} / {{ server.maxPlayers() }}</div>
+    }
+  </section>
 
   <section>
     <h2>Worlds</h2>
     <app-world-list />
+
+    <div>
+      @if (worldsStore.activeWorld(); as w) {
+        Now running: {{ w | worldSummary }}
+      } @else {
+        No world running.
+      }
+    </div>
   </section>
 
   <section>
     <button type="button" (click)="refreshServer()">Refresh Server</button>
-
   </section>
 </main>
 <router-outlet />
