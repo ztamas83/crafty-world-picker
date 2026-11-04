@@ -2,7 +2,14 @@ import { HttpClient, HttpClientCommonOptions, httpResource } from '@angular/comm
 import { computed, inject, Service, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { CraftyResponse, FileData, Files, ServerStats } from '../models/crafty';
+import {
+  CraftyResponse,
+  FileData,
+  Files,
+  ServerAction,
+  ServerStats,
+  SimpleCraftyResponse,
+} from '../models/crafty';
 
 @Service()
 export class Crafty {
@@ -33,6 +40,36 @@ export class Crafty {
         headers: this.options.headers,
         responseType: 'arraybuffer',
       }),
+    );
+  }
+
+  async writeFile(
+    path: string,
+    contents: string,
+    modifiedEpoch: number,
+  ): Promise<CraftyResponse<FileData>> {
+    return await firstValueFrom(
+      this.http.patch<CraftyResponse<FileData>>(
+        `${this.baseUrl}/files`,
+        {
+          path,
+          contents,
+          modified_epoch: modifiedEpoch,
+        },
+        {
+          headers: this.options.headers,
+        },
+      ),
+    );
+  }
+
+  async serverAction(action: ServerAction): Promise<SimpleCraftyResponse> {
+    return await firstValueFrom(
+      this.http.post<SimpleCraftyResponse>(
+        `${this.baseUrl}/action/${action}`,
+        {},
+        { headers: this.options.headers },
+      ),
     );
   }
 

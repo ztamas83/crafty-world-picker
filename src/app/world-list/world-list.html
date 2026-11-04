@@ -6,7 +6,11 @@
   <ul>
     @for (world of worldsStore.list(); track world.id) {
       <li>
-        <app-world-card (startWorld)="worldsStore.startWorld($event)" [world]="world" />
+        <app-world-card
+          (startWorld)="worldsStore.startWorld($event)"
+          [world]="world"
+          [serverIsBusy]="worldsStore.isBusy()"
+        />
       </li>
     } @empty {
       <li>No world found</li>

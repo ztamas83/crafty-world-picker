@@ -22,6 +22,6 @@ export class App {
   });
 
   protected refreshServer(): void {
-    this.server.stats.reload();
+    this.worldsStore.reload();
   }
 }

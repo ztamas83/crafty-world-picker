@@ -35,7 +35,11 @@ function lineEnding(content: string): string {
 }
 
 /** Returns the value of `key`, or `undefined` if the key is not present. */
-export function getProperty(content: string, key: string): string | undefined {
+export function getProperty(content: string | undefined, key: string): string | undefined {
+  if (content === undefined) {
+    return undefined;
+  }
+
   for (const line of content.split(/\r?\n/)) {
     const raw = matchKey(line, key);
     if (raw !== undefined) {
@@ -50,7 +54,14 @@ export function getProperty(content: string, key: string): string | undefined {
  * Replaces the first existing line for `key`, or appends a new line.
  * Other lines and the original line ending style are kept.
  */
-export function setProperty(content: string, key: string, value: string): string {
+export function setProperty(
+  content: string | undefined,
+  key: string,
+  value: string,
+): string | undefined {
+  if (content === undefined) {
+    return undefined;
+  }
   const eol = lineEnding(content);
   const lines = content.split(/\r?\n/);
   const newLine = `${key}=${escapeValue(value)}`;

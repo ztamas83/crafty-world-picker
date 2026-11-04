@@ -1,9 +1,9 @@
-import { computed, inject, resource, Service } from '@angular/core';
+import { computed, inject, resource, Service, signal } from '@angular/core';
 import { Files } from '../models/crafty';
 import { GameMode, World } from '../models/world';
 import { Crafty } from './crafty';
 import { LevelSettings, readLevelSettings } from './level-dat';
-import { getProperty } from './server-properties';
+import { getProperty, setProperty } from './server-properties';
 import { WorldStore } from './world-store';
 
 const WORLDS_FOLDER = 'worlds';
@@ -106,12 +106,51 @@ export class CraftyWorldStore implements WorldStore {
     }
     return undefined;
   });
+  readonly isBusy = signal(false);
 
   readonly isError = computed(() => {
     return this.errorMessage() !== undefined;
   });
 
-  startWorld(id: string): void {
-    console.log('Start world clicked with id', id);
+  reload(): void {
+    this.crafty.stats.reload();
+    this.serverData.reload();
+  }
+
+  async startWorld(id: string): Promise<void> {
+    try {
+      this.isBusy.set(true);
+      console.log('Start world clicked with id', id);
+
+      const props = await this.crafty.readFile('server.properties');
+
+      const newProps = setProperty(props.data.content, 'level-name', id);
+      if (newProps === undefined) {
+        console.error('Could not set new properties, no action');
+        return;
+      }
+
+      const propsResult = await this.crafty.writeFile(
+        'server.properties',
+        newProps,
+        props.data.attributes.modified_epoch,
+      );
+      try {
+        await this.crafty.serverAction(this.crafty.isRunning() ? 'restart_server' : 'start_server');
+      } catch {
+        console.warn('Restart server failed, restoring level value');
+        await this.crafty.writeFile(
+          'server.properties',
+          props.data.content!,
+          propsResult.data.attributes.modified_epoch,
+        );
+      }
+
+      this.reload();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      this.isBusy.set(false);
+    }
   }
 }

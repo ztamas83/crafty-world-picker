@@ -10,6 +10,7 @@ import { WorldSummaryPipe } from '../../world-summary-pipe';
 })
 export class WorldCard {
   readonly world = input.required<World>();
+  readonly serverIsBusy = input.required<boolean>();
   readonly startWorld = output<string>();
   protected readonly isActive = computed(() => this.world().status === 'started');
 }

@@ -6,6 +6,7 @@
     <button
       type="button"
       [attr.aria-label]="`Play world ${world().name}`"
+      [disabled]="serverIsBusy()"
       (click)="startWorld.emit(world().id)"
     >
       Play

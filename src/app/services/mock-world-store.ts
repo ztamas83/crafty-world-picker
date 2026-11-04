@@ -9,15 +9,20 @@ export class MockWorldStore implements WorldStore {
 
   readonly isError = signal(false);
   readonly isLoading = signal(false);
+  readonly isBusy = signal(false);
 
   readonly activeWorld = computed(() => this.worlds().find((w) => w.status === 'started'));
 
   readonly list = this.worlds.asReadonly();
 
-  startWorld(id: string): void {
+  async startWorld(id: string): Promise<void> {
     console.log('Start world clicked with id', id);
     this.worlds.update((worlds) =>
       worlds.map((w) => ({ ...w, status: w.id === id ? 'started' : 'stopped' })),
     );
+  }
+
+  reload(): void {
+    console.log('Reload triggered');
   }
 }
