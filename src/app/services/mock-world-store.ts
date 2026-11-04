@@ -7,6 +7,9 @@ import { WorldStore } from './world-store';
 export class MockWorldStore implements WorldStore {
   private readonly worlds = signal<World[]>(mockWorlds);
 
+  readonly isError = signal(false);
+  readonly isLoading = signal(false);
+
   readonly activeWorld = computed(() => this.worlds().find((w) => w.status === 'started'));
 
   readonly list = this.worlds.asReadonly();

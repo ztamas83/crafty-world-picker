@@ -1,15 +1,44 @@
-import { httpResource } from '@angular/common/http';
-import { computed, Service, signal } from '@angular/core';
+import { HttpClient, HttpClientCommonOptions, httpResource } from '@angular/common/http';
+import { computed, inject, Service, signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { CraftyResponse, ServerStats } from '../models/crafty';
+import { CraftyResponse, FileData, Files, ServerStats } from '../models/crafty';
 
 @Service()
 export class Crafty {
+  private readonly http = inject(HttpClient);
+  private options: HttpClientCommonOptions = {
+    headers: { Authorization: `Bearer ${environment.craftyApiToken}` },
+  };
   readonly serverId = signal(environment.craftyServerId);
+
+  private baseUrl = `/api/v2/servers/${this.serverId()}`;
+
+  async listFiles(path: string) {
+    return await firstValueFrom(
+      this.http.post<CraftyResponse<Files>>(`${this.baseUrl}/files`, { path }, this.options),
+    );
+  }
+
+  async readFile(path: string) {
+    return await firstValueFrom(
+      this.http.post<CraftyResponse<FileData>>(`${this.baseUrl}/files`, { path }, this.options),
+    );
+  }
+
+  /** Downloads a file as raw bytes. Requires the FILES permission. */
+  async downloadFile(path: string): Promise<ArrayBuffer> {
+    return await firstValueFrom(
+      this.http.get(`${this.baseUrl}/files/${encodeURIComponent(path)}/download`, {
+        headers: this.options.headers,
+        responseType: 'arraybuffer',
+      }),
+    );
+  }
 
   readonly stats = httpResource<CraftyResponse<ServerStats>>(() => ({
     url: `/api/v2/servers/${this.serverId()}/stats`,
-    headers: { Authorization: `Bearer ${environment.craftyApiToken}` },
+    headers: this.options.headers,
   }));
 
   readonly lastError = this.stats.error;

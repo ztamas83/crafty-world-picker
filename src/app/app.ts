@@ -3,10 +3,9 @@ import { RouterOutlet } from '@angular/router';
 import { Crafty } from './services/crafty';
 import { WorldStore } from './services/world-store';
 import { WorldList } from './world-list/world-list';
-import { WorldSummaryPipe } from './world-summary-pipe';
 
 @Component({
-  imports: [RouterOutlet, WorldList, WorldSummaryPipe],
+  imports: [RouterOutlet, WorldList],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',

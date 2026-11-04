@@ -26,7 +26,7 @@
 
     <div>
       @if (worldsStore.activeWorld(); as w) {
-        Now running: {{ w | worldSummary }}
+        Now running: {{ w.name }}
       } @else {
         No world running.
       }

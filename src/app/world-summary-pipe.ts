@@ -6,7 +6,9 @@ import { World } from './models/world';
 })
 export class WorldSummaryPipe implements PipeTransform {
   transform(w: World | undefined): string {
-    if (w === undefined) { return ""; }
-    return `${w.name} · ${w.mode} · ${w.difficulty}`;
+    if (w === undefined) {
+      return '';
+    }
+    return `${w.mode || 'Unknown'} · ${w.difficulty || 'Unknown'}`;
   }
 }

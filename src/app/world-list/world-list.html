@@ -1,9 +1,15 @@
-<ul>
-  @for (world of worldsStore.list(); track world.id) {
-    <li>
-      <app-world-card (startWorld)="worldsStore.startWorld($event)" [world]="world" />
-    </li>
-  } @empty {
-    <li>No world found</li>
-  }
-</ul>
+@if (worldsStore.isLoading()) {
+  Loading world list ...
+} @else if (worldsStore.isError()) {
+  <div role="alert">Error loading world list!</div>
+} @else {
+  <ul>
+    @for (world of worldsStore.list(); track world.id) {
+      <li>
+        <app-world-card (startWorld)="worldsStore.startWorld($event)" [world]="world" />
+      </li>
+    } @empty {
+      <li>No world found</li>
+    }
+  </ul>
+}
