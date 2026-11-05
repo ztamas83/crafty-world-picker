@@ -10,7 +10,13 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 ## Deployment
 
-Docker, Docker Compose (with Crafty) and LXC/nginx: see [deploy/README.md](deploy/README.md).
+Quick install on Debian/Ubuntu (LXC, VM or bare metal), with nginx. It asks for the Crafty settings on the first run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ztamas83/crafty-world-picker/master/install.sh | sudo bash
+```
+
+Docker, Docker Compose (with Crafty) and more options: see [deploy/README.md](deploy/README.md).
 
 ## Prerequisites
 

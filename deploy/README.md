@@ -70,6 +70,23 @@ with `extra_hosts: ["host.docker.internal:host-gateway"]` for the picker.
 
 ## 3. Standalone SPA on an LXC container (nginx)
 
+### One-line install
+
+On the target (Debian/Ubuntu), this downloads the latest release, verifies its checksum, asks for
+the Crafty settings on the first run, and runs the installer described below:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ztamas83/crafty-world-picker/master/install.sh | sudo bash
+```
+
+- Pin a version: `... | sudo bash -s -- v0.1`
+- No questions (automation): `... | sudo CRAFTY_URL=https://127.0.0.1:8443 CRAFTY_SERVER_ID=<uuid> CRAFTY_API_TOKEN=<token> LISTEN_PORT=8081 bash`
+- Update: rerun the same command. The existing `/etc/crafty-world-picker.env` is kept.
+- Releases are unpacked to `/opt/crafty-world-picker/<version>` (`current` points to the
+  active one, the three newest are kept).
+
+### Manual install
+
 Each `v*` tag builds a release package (see [Releases](#releases)). On the target (Debian 13, as root):
 
 ```bash
