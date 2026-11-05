@@ -1,60 +1,61 @@
 # crafty-world-picker
 
-An UI wrapper around Crafty (https://gitlab.com/crafty-controller/crafty-4)
+A simple, kid-friendly web UI on top of [Crafty Controller](https://gitlab.com/crafty-controller/crafty-4) for picking which Minecraft world the server runs.
+
+I built this for my kids. When friends come over to play, they want to jump into a world quickly, and Crafty's full admin panel is a lot to handle for that. Here they see their worlds as cards, tap Start on the one they want, and can create a new world with a name, game mode and difficulty. Crafty handles the rest.
+
+It is also my hands-on project for learning Angular: standalone components, signals, `httpResource` and Signal Forms, built step by step using Angular's AI Tutor with Claude.
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.5.
 
-## Development server
+## Deployment
 
-To start a local development server, run:
+Docker, Docker Compose (with Crafty) and LXC/nginx: see [deploy/README.md](deploy/README.md).
+
+## Prerequisites
+
+The project uses [Bun](https://bun.sh) (1.4.4, pinned in `package.json`) as package manager and script runner. Install dependencies with:
 
 ```bash
-ng serve
+bun install
+```
+
+Run Angular CLI commands with `bunx ng <command>`.
+
+## Development server
+
+Copy `.env.example` to `.env` and fill in the Crafty connection, then run:
+
+```bash
+bun run start
 ```
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
 ## Building
 
-To build the project run:
-
 ```bash
-ng build
+bun run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+This compiles the app into `dist/crafty-world-picker/browser/`. By default, the production build optimizes the app for performance and speed.
 
 ## Running unit tests
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Unit tests use the [Vitest](https://vitest.dev/) runner:
 
 ```bash
-ng test
+bun run test         # run once
+bun run test:watch   # rerun on changes
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+## Linting and formatting
 
 ```bash
-ng e2e
+bun run lint            # oxlint
+bun run format          # prettier --write
+bun run format:check    # prettier --check
 ```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
 ## Additional Resources
 

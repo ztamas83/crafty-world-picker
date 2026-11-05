@@ -1,0 +1,9 @@
+.git
+.angular
+.agents
+.vscode
+node_modules
+dist
+deploy/compose
+.env
+*.md

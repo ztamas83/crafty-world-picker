@@ -2,7 +2,6 @@ import { Signal } from '@angular/core';
 import { NewWorld, World } from '../models/world.model';
 
 export abstract class WorldStore {
-  abstract readonly serverId: Signal<string>;
   abstract readonly isServerRunning: Signal<boolean>;
   abstract readonly onlinePlayers: Signal<number>;
   abstract readonly maxPlayers: Signal<number>;

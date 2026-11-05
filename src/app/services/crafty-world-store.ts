@@ -96,7 +96,6 @@ export class CraftyWorldStore implements WorldStore {
     }));
   });
 
-  readonly serverId = this.crafty.serverId;
   readonly isServerRunning = computed(() => Boolean(this.crafty.isRunning()));
   readonly onlinePlayers = computed(() => this.crafty.onlinePlayers() ?? 0);
   readonly maxPlayers = computed(() => this.crafty.maxPlayers() ?? 0);

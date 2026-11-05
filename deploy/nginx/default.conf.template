@@ -1,0 +1,43 @@
+# Serves the SPA and proxies /api/server/ to one Crafty server, adding the API token.
+# Rendered with envsubst; only these variables are substituted:
+#   LISTEN_PORT, WEB_ROOT, CRAFTY_URL, CRAFTY_SERVER_ID, CRAFTY_API_TOKEN
+
+server {
+    listen ${LISTEN_PORT};
+    listen [::]:${LISTEN_PORT};
+    server_name _;
+
+    root ${WEB_ROOT};
+    index index.html;
+
+    # Only this server's API is reachable through the proxy, never the rest of Crafty.
+    location /api/server/ {
+        proxy_pass ${CRAFTY_URL}/api/v2/servers/${CRAFTY_SERVER_ID}/;
+        proxy_set_header Authorization "Bearer ${CRAFTY_API_TOKEN}";
+        proxy_set_header Cookie "";
+        proxy_http_version 1.1;
+        # Crafty uses a self-signed certificate by default
+        proxy_ssl_verify off;
+        proxy_ssl_server_name on;
+        proxy_read_timeout 120s;
+        client_max_body_size 10m;
+    }
+
+    location = /healthz {
+        access_log off;
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+
+    # Hashed build output can be cached forever
+    location ~* \.(?:js|css|woff2?|ttf|svg|png|jpe?g|webp|ico)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    location / {
+        add_header Cache-Control "no-cache";
+        try_files $uri $uri/ /index.html;
+    }
+}

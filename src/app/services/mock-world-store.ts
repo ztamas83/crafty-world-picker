@@ -7,7 +7,6 @@ import { WorldStore } from './world-store';
 export class MockWorldStore implements WorldStore {
   private readonly worlds = signal<World[]>(mockWorlds);
 
-  readonly serverId = signal('mock-server-id');
   readonly isError = signal(false);
   readonly isLoading = signal(false);
   readonly isInitialLoading = signal(false);
