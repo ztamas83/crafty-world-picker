@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Read Bun version from package.json
+        id: bun
+        run: echo "version=$(jq -r '.packageManager | sub("^bun@"; "")' package.json)" >> "$GITHUB_OUTPUT"
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Test
+        run: bun run test
+
+      - name: Build LXC package
+        run: deploy/lxc/package.sh "$GITHUB_REF_NAME"
+
+      - name: Zip package
+        run: |
+          name="crafty-world-picker-$GITHUB_REF_NAME"
+          mv dist/lxc "dist/$name"
+          (cd dist && zip -qr "$name.zip" "$name" && sha256sum "$name.zip" > "$name.zip.sha256")
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            "dist/crafty-world-picker-$GITHUB_REF_NAME.zip" \
+            "dist/crafty-world-picker-$GITHUB_REF_NAME.zip.sha256" \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes \
+            --verify-tag

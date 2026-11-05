@@ -5,12 +5,12 @@ All options serve the built SPA from nginx and proxy `/api/server/` to
 The token and server ID never reach the browser, and only that one Crafty server's API is
 reachable through the proxy. The shared nginx config is [nginx/default.conf.template](nginx/default.conf.template).
 
-| Variable           | Required | Meaning                                                                                                        |
-| ------------------ | -------- | -------------------------------------------------------------------------------------------------------------- |
+| Variable           | Required | Meaning                                                                                                     |
+| ------------------ | -------- | ----------------------------------------------------------------------------------------------------------- |
 | `CRAFTY_URL`       | yes      | Crafty base URL, e.g. `https://crafty.lan:8443`. TLS is not verified (Crafty's certificate is self-signed). |
-| `CRAFTY_SERVER_ID` | yes      | UUID of the Crafty server that hosts the worlds.                                                               |
-| `CRAFTY_API_TOKEN` | yes      | Crafty API key with server permissions Commands + Files.                                                       |
-| `LISTEN_PORT`      | no       | Port nginx listens on. Docker: `8080`, LXC: `8081`.                                                            |
+| `CRAFTY_SERVER_ID` | yes      | UUID of the Crafty server that hosts the worlds.                                                            |
+| `CRAFTY_API_TOKEN` | yes      | Crafty API key with server permissions Commands + Files.                                                    |
+| `LISTEN_PORT`      | no       | Port nginx listens on. Docker: `8080`, LXC: `8081`.                                                         |
 
 The app has no authentication. Anyone who can reach it can start and stop the server, so keep
 it on the LAN.
@@ -70,22 +70,26 @@ with `extra_hosts: ["host.docker.internal:host-gateway"]` for the picker.
 
 ## 3. Standalone SPA on an LXC container (nginx)
 
-Build the package on a machine with Bun:
+Each `v*` tag builds a release package (see [Releases](#releases)). On the target (Debian 13, as root):
 
 ```bash
-deploy/lxc/package.sh         # -> dist/lxc/{install.sh, default.conf.template, www/}
+apt-get install -y unzip curl   # not in Debian's minimal image
+VERSION=v1.0.0
+curl -fLO https://github.com/ztamas83/crafty-world-picker/releases/download/$VERSION/crafty-world-picker-$VERSION.zip
+unzip crafty-world-picker-$VERSION.zip
+cp crafty-world-picker-$VERSION/crafty-world-picker.env.example /etc/crafty-world-picker.env
+nano /etc/crafty-world-picker.env   # first install only: fill in the Crafty settings
+crafty-world-picker-$VERSION/install.sh
 ```
 
-On the target (Debian 13, as root), with `/etc/crafty-world-picker.env` in place
-(template: [lxc/crafty-world-picker.env.example](lxc/crafty-world-picker.env.example)):
+To build the package yourself instead: `deploy/lxc/package.sh [version]` creates `dist/lxc/`
+with the same content as the zip.
 
-```bash
-/path/to/dist/lxc/install.sh
-```
-
-It installs `nginx` and `gettext-base` if missing, copies the app to `/var/www/crafty-world-picker`,
-renders `/etc/nginx/sites-available/crafty-world-picker` (mode 600, it holds the token), disables
-Debian's default site, and reloads nginx. Rerun it to update. No Node.js is needed on the target.
+The installer installs `nginx`, `gettext-base` and `curl` if missing, copies the app to
+`/var/www/crafty-world-picker`, renders `/etc/nginx/sites-available/crafty-world-picker` (mode 600,
+it holds the token), disables Debian's default site, and reloads nginx. It logs to
+`/var/log/crafty-world-picker-install.log` (`VERBOSE=1` for full command output). Rerun it with a
+newer package to update. No Node.js is needed on the target.
 
 ### Terraform
 
@@ -182,6 +186,17 @@ resource "terraform_data" "crafty_world_picker" {
     inline = ["sh /opt/crafty-world-picker/install.sh"]
   }
 }
+```
+
+## Releases
+
+[../.github/workflows/release.yml](../.github/workflows/release.yml) runs on every pushed `v*` tag:
+lint, unit tests, `deploy/lxc/package.sh`, then a GitHub release with
+`crafty-world-picker-<tag>.zip` and its `.sha256`, with generated release notes.
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
 ## Development

@@ -89,7 +89,10 @@ mask() { # shows only the first and last 4 characters of a secret
 touch "$LOG_FILE" 2>/dev/null && chmod 600 "$LOG_FILE"
 log "===== $APP install started from $SRC ====="
 
-printf '%sCrafty World Picker installer%s\n' "$C_BOLD" "$C_RESET"
+VERSION=$(cat "$SRC/VERSION" 2>/dev/null || echo unknown)
+log "Package version: $VERSION"
+
+printf '%sCrafty World Picker installer%s (version %s)\n' "$C_BOLD" "$C_RESET" "$VERSION"
 printf '%sPackage: %s | Log: %s%s\n\n' "$C_DIM" "$SRC" "$LOG_FILE" "$C_RESET"
 
 step "Checking the package"
@@ -102,7 +105,7 @@ ok "Package complete ($(find "$SRC/www" -type f | wc -l) app files)"
 
 step "Reading configuration from $ENV_FILE"
 [ -f "$ENV_FILE" ] || fail "Configuration file $ENV_FILE does not exist." \
-  "Create it from crafty-world-picker.env.example (in the repository under deploy/lxc/)." \
+  "Create it from $SRC/crafty-world-picker.env.example: cp $SRC/crafty-world-picker.env.example $ENV_FILE" \
   "It needs CRAFTY_URL, CRAFTY_SERVER_ID and CRAFTY_API_TOKEN."
 set -a; . "$ENV_FILE"; set +a
 LISTEN_PORT=${LISTEN_PORT:-8081}
@@ -225,7 +228,8 @@ fi
 
 CURRENT=""
 host_ip=$(hostname -I 2>/dev/null | awk '{print $1}')
-log "===== install finished ====="
+printf '%s\n' "$VERSION" > "$WEB_ROOT/VERSION"
+log "===== install of $VERSION finished ====="
 printf '\n%sDone.%s Crafty World Picker is available at %shttp://%s:%s/%s\n' \
   "$C_GREEN" "$C_RESET" "$C_BOLD" "${host_ip:-<this-host>}" "$LISTEN_PORT" "$C_RESET"
 printf '%sTo update: rerun this script from a new package. To change settings: edit %s and rerun.%s\n' \
