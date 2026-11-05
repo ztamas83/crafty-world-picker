@@ -114,6 +114,16 @@ select {
   color: var(--muted);
 }
 
+h1 {
+  margin: 0 0 4px;
+  font-size: 1.6rem;
+}
+
+h2 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+}
+
 .error {
   margin-bottom: 16px;
   padding: 12px;
